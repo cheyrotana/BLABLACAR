@@ -1,3 +1,4 @@
+import 'package:blabla/ui/screens/location_picker/location_picker_screen.dart';
 import 'package:blabla/ui/theme/theme.dart';
 import 'package:blabla/ui/widgets/actions/bla_button.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +61,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
     // 1 - Push the departure selection screen
     final departureResult = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const Placeholder()),
+      MaterialPageRoute(builder: (context) => const LocationPickerScreen()),
     );
 
     // 2 - Check result and update state if valid
@@ -75,7 +76,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
     // 1 - Push the arrival selection screen
     final arrivalLocation = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const Placeholder()),
+      MaterialPageRoute(builder: (context) => LocationPickerScreen()),
     );
 
     // 2 - Check result and update state if valid
