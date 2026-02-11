@@ -12,7 +12,6 @@ class BlaButton extends StatelessWidget {
   final IconData? buttonIcon;
   final bool isPrimary;
   final VoidCallback onPressed;
-  final double? width;
 
   const BlaButton({
     super.key,
@@ -20,7 +19,6 @@ class BlaButton extends StatelessWidget {
     this.buttonIcon,
     required this.isPrimary,
     required this.onPressed,
-    this.width,
   });
 
   // Compute colors and border based on primary status
