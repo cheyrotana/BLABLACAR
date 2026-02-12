@@ -1,7 +1,5 @@
 import 'package:blabla/model/ride/locations.dart';
 import 'package:blabla/services/location_service.dart';
-import 'package:blabla/ui/screens/location_picker/widgets/location_picker_list_tile.dart';
-import 'package:blabla/ui/screens/location_picker/widgets/location_picker_search_bar.dart';
 import 'package:blabla/ui/theme/theme.dart';
 import 'package:blabla/ui/widgets/display/bla_divider.dart';
 import 'package:flutter/material.dart';
@@ -10,14 +8,14 @@ import 'package:flutter/material.dart';
 /// - Provides a search bar to filter locations by name
 /// - Displays matching locations in a scrollable list
 /// - Returns the selected location to the previous screen
-class LocationPickerScreen extends StatefulWidget {
-  const LocationPickerScreen({super.key});
+class BlaLocationPicker extends StatefulWidget {
+  const BlaLocationPicker({super.key});
 
   @override
-  State<LocationPickerScreen> createState() => _LocationPickerScreenState();
+  State<BlaLocationPicker> createState() => _BlaLocationPickerState();
 }
 
-class _LocationPickerScreenState extends State<LocationPickerScreen> {
+class _BlaLocationPickerState extends State<BlaLocationPicker> {
   late TextEditingController searchController;
   List<Location> searchResults = [];
 
@@ -95,6 +93,85 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// This widget provides a search bar for the location picker.
+/// - Displays a text field for entering search queries
+/// - Includes a back button to navigate back
+/// - Shows a clear button when text is entered
+/// - Calls callbacks for search changes, back press, and clear press
+class LocationPickerSearchBar extends StatelessWidget {
+  final TextEditingController controller;
+  final ValueChanged<String> onSearchChanged;
+  final VoidCallback onBackPressed;
+  final VoidCallback onClearPressed;
+
+  const LocationPickerSearchBar({
+    super.key,
+    required this.controller,
+    required this.onSearchChanged,
+    required this.onBackPressed,
+    required this.onClearPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(BlaSpacings.m),
+      child: TextField(
+        controller: controller,
+        onChanged: onSearchChanged,
+        decoration: InputDecoration(
+          prefixIcon: IconButton(
+            onPressed: onBackPressed,
+            icon: Icon(Icons.arrow_back_ios, size: 16),
+          ),
+          suffixIcon: controller.text.isNotEmpty
+              ? IconButton(onPressed: onClearPressed, icon: Icon(Icons.clear))
+              : null,
+          hintText: 'Station Road or The Bridge Cafe',
+          hintStyle: BlaTextStyles.label,
+          contentPadding: EdgeInsets.all(BlaSpacings.m),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(BlaSpacings.radius),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: BlaColors.greyLight,
+        ),
+      ),
+    );
+  }
+}
+
+/// This widget displays a location result in the location picker list.
+/// - Shows the city name as the title
+/// - Shows the country name as subtitle
+/// - Includes an arrow icon for navigation
+/// - Handles tap to select the location
+class LocationListTile extends StatelessWidget {
+  final String cityName;
+  final String countryName;
+  final VoidCallback onPressed;
+
+  const LocationListTile({
+    super.key,
+    required this.cityName,
+    required this.countryName,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: ListTile(
+        title: Text(cityName, style: BlaTextStyles.body),
+        subtitle: Text(countryName, style: BlaTextStyles.label),
+        trailing: Icon(Icons.arrow_forward_ios, size: 16),
       ),
     );
   }
