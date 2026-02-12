@@ -38,12 +38,12 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     setState(() {
       // 1 - Check if query is at least 2 characters long
       if (query.length >= 2) {
-        // 2 - Filter available locations that contain the query (case insensitive)
+        // 2 - Filter available locations that starts with the query (case insensitive)
         searchResults = LocationsService.availableLocations
             .where(
               (availableLocation) => availableLocation.name
                   .toLowerCase()
-                  .contains(query.toLowerCase()),
+                  .startsWith(query.toLowerCase()),
             )
             .toList();
       } else {
