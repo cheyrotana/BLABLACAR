@@ -31,8 +31,6 @@ class _RidePrefFormState extends State<RidePrefForm> {
   late DateTime departureDate;
   Location? arrival;
   late int requestedSeats;
-  bool swapButtonOnDeparture =
-      true; // true: swap button on departure row; false: on arrival row
 
   // ----------------------------------
   // Initialize the Form attributes
@@ -62,7 +60,9 @@ class _RidePrefFormState extends State<RidePrefForm> {
     // 1 - Push the departure selection screen
     final departureResult = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => BlaLocationPicker()),
+      MaterialPageRoute(
+        builder: (context) => BlaLocationPicker(initLocation: departure),
+      ),
     );
 
     // 2 - Check result and update state if valid
@@ -78,7 +78,9 @@ class _RidePrefFormState extends State<RidePrefForm> {
     // 1 - Push the arrival selection screen
     final arrivalLocation = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => BlaLocationPicker()),
+      MaterialPageRoute(
+        builder: (context) => BlaLocationPicker(initLocation: arrival),
+      ),
     );
 
     // 2 - Check result and update state if valid
@@ -121,15 +123,12 @@ class _RidePrefFormState extends State<RidePrefForm> {
     }
   }
 
-  /// Swaps the departure and arrival locations, and toggles the swap button position.
+  /// Swaps the departure and arrival locations.
   void _swapLocations() {
     setState(() {
-      // 1 - Swap the locations
-      final Location temp = departure!;
+      final Location? temp = departure;
       departure = arrival;
       arrival = temp;
-      // 2 - Toggle the button position
-      swapButtonOnDeparture = !swapButtonOnDeparture;
     });
   }
 
@@ -164,13 +163,13 @@ class _RidePrefFormState extends State<RidePrefForm> {
 
   /// Returns the trailing widget for the departure row
   Widget? _departureTrailing() {
-    if (swapButtonOnDeparture && departure != null) return _swapButton();
+    if (departure != null) return _swapButton();
     return null;
   }
 
   /// Returns the trailing widget for the arrival row
   Widget? _arrivalTrailing() {
-    if (!swapButtonOnDeparture && arrival != null) return _swapButton();
+    if (arrival != null && departure == null) return _swapButton();
     return null;
   }
 

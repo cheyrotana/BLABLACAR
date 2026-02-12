@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 /// - Displays matching locations in a scrollable list
 /// - Returns the selected location to the previous screen
 class BlaLocationPicker extends StatefulWidget {
-  const BlaLocationPicker({super.key});
+  final Location? initLocation;
+
+  const BlaLocationPicker({super.key, this.initLocation});
 
   @override
   State<BlaLocationPicker> createState() => _BlaLocationPickerState();
@@ -22,8 +24,12 @@ class _BlaLocationPickerState extends State<BlaLocationPicker> {
   @override
   void initState() {
     super.initState();
-    // Initialize the text controller for the search bar
     searchController = TextEditingController();
+    // If initLocation is provided, set the search text
+    if (widget.initLocation != null) {
+      searchController.text = widget.initLocation!.name;
+      _onSearchChanged(widget.initLocation!.name);
+    }
   }
 
   @override
@@ -68,7 +74,7 @@ class _BlaLocationPickerState extends State<BlaLocationPicker> {
           child: Column(
             children: [
               LocationPickerSearchBar(
-                controller: searchController,
+                searchController: searchController,
                 onSearchChanged: _onSearchChanged,
                 onBackPressed: () => Navigator.pop(context),
                 onClearPressed: () {
@@ -104,14 +110,14 @@ class _BlaLocationPickerState extends State<BlaLocationPicker> {
 /// - Shows a clear button when text is entered
 /// - Calls callbacks for search changes, back press, and clear press
 class LocationPickerSearchBar extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController searchController;
   final ValueChanged<String> onSearchChanged;
   final VoidCallback onBackPressed;
   final VoidCallback onClearPressed;
 
   const LocationPickerSearchBar({
     super.key,
-    required this.controller,
+    required this.searchController,
     required this.onSearchChanged,
     required this.onBackPressed,
     required this.onClearPressed,
@@ -122,14 +128,14 @@ class LocationPickerSearchBar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(BlaSpacings.m),
       child: TextField(
-        controller: controller,
+        controller: searchController,
         onChanged: onSearchChanged,
         decoration: InputDecoration(
           prefixIcon: IconButton(
             onPressed: onBackPressed,
             icon: Icon(Icons.arrow_back_ios, size: 16),
           ),
-          suffixIcon: controller.text.isNotEmpty
+          suffixIcon: searchController.text.isNotEmpty
               ? IconButton(onPressed: onClearPressed, icon: Icon(Icons.clear))
               : null,
           hintText: 'Station Road or The Bridge Cafe',
