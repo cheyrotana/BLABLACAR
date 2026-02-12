@@ -3,10 +3,10 @@ import 'package:blabla/ui/theme/theme.dart';
 import 'package:blabla/ui/widgets/actions/bla_button.dart';
 import 'package:blabla/ui/widgets/display/bla_divider.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../model/ride/locations.dart';
 import '../../../../model/ride_pref/ride_pref.dart';
 import '../../../../utils/date_time_utils.dart';
+import 'ride_prefs_form_row.dart';
 
 ///
 /// A Ride Preference From is a view to select:
@@ -183,7 +183,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _formRow(
+        RidePrefFormRow(
           label: departureLabel,
           value: departureValue,
           onTap: _selectDeparture,
@@ -191,7 +191,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
           trailing: _departureTrailing(),
         ),
         BlaDivider(),
-        _formRow(
+        RidePrefFormRow(
           label: arrivalLabel,
           value: arrivalValue,
           onTap: _selectArrival,
@@ -199,13 +199,13 @@ class _RidePrefFormState extends State<RidePrefForm> {
           trailing: _arrivalTrailing(),
         ),
         BlaDivider(),
-        _formRow(
+        RidePrefFormRow(
           value: dateText,
           onTap: _selectDate,
           formIcon: Icons.calendar_month_rounded,
         ),
         BlaDivider(),
-        _formRow(
+        RidePrefFormRow(
           value: seatsText,
           onTap: _selectSeats,
           formIcon: Icons.person_outline,
@@ -218,40 +218,6 @@ class _RidePrefFormState extends State<RidePrefForm> {
           ),
         ),
       ],
-    );
-  }
-
-  /// Builds a reusable row widget for form fields
-  Widget _formRow({
-    String? label,
-    String? value,
-    required VoidCallback onTap,
-    required IconData formIcon,
-    Widget? trailing,
-  }) {
-    // Determine the text to display
-    final String displayText = value ?? label ?? '';
-
-    // Determine if the displayed text is a placeholder
-    final bool isPlaceholder;
-    if (value == null && label != null) {
-      isPlaceholder = true;
-    } else {
-      isPlaceholder = false;
-    }
-
-    return ListTile(
-      contentPadding: EdgeInsets.all(BlaSpacings.s),
-      leading: Icon(formIcon),
-      title: Text(
-        displayText,
-        style: BlaTextStyles.body.copyWith(
-          color: isPlaceholder ? BlaColors.neutralLight : null,
-        ),
-        overflow: TextOverflow.ellipsis,
-      ),
-      trailing: trailing,
-      onTap: onTap,
     );
   }
 }
