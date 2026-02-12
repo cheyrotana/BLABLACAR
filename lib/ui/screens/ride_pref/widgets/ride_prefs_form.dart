@@ -42,13 +42,10 @@ class _RidePrefFormState extends State<RidePrefForm> {
   void initState() {
     super.initState();
     if (widget.initRidePref != null) {
-      departure =
-          widget.initRidePref!.departure; // Departure location from init
-      arrival = widget.initRidePref!.arrival; // Arrival location from init
-      departureDate =
-          widget.initRidePref!.departureDate; // Departure date from init
-      requestedSeats =
-          widget.initRidePref!.requestedSeats; // Number of seats from init
+      departure = widget.initRidePref!.departure;
+      arrival = widget.initRidePref!.arrival;
+      departureDate = widget.initRidePref!.departureDate;
+      requestedSeats = widget.initRidePref!.requestedSeats;
     } else {
       // No initial RidePref, set defaults
       departureDate = DateTime.now(); // Defaults to now
@@ -65,7 +62,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
     // 1 - Push the departure selection screen
     final departureResult = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const LocationPickerScreen()),
+      MaterialPageRoute(builder: (context) => LocationPickerScreen()),
     );
 
     // 2 - Check result and update state if valid
@@ -128,7 +125,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
   void _swapLocations() {
     setState(() {
       // 1 - Swap the locations
-      final temp = departure;
+      final Location temp = departure!;
       departure = arrival;
       arrival = temp;
       // 2 - Toggle the button position
@@ -232,11 +229,9 @@ class _RidePrefFormState extends State<RidePrefForm> {
     required IconData formIcon,
     Widget? trailing,
   }) {
-    
     // Determine the text to display
-    final String displayText =
-        value ?? label ?? ''; 
-        
+    final String displayText = value ?? label ?? '';
+
     // Determine if the displayed text is a placeholder
     final bool isPlaceholder;
     if (value == null && label != null) {
@@ -245,28 +240,18 @@ class _RidePrefFormState extends State<RidePrefForm> {
       isPlaceholder = false;
     }
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.all(BlaSpacings.m),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Icon(formIcon),
-            SizedBox(width: BlaSpacings.s),
-            Expanded(
-              child: Text(
-                displayText,
-                style: BlaTextStyles.body.copyWith(
-                  color: isPlaceholder ? BlaColors.neutralLight : null,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            if (trailing != null) trailing,
-          ],
+    return ListTile(
+      contentPadding: EdgeInsets.all(BlaSpacings.s),
+      leading: Icon(formIcon),
+      title: Text(
+        displayText,
+        style: BlaTextStyles.body.copyWith(
+          color: isPlaceholder ? BlaColors.neutralLight : null,
         ),
+        overflow: TextOverflow.ellipsis,
       ),
+      trailing: trailing,
+      onTap: onTap,
     );
   }
 }
