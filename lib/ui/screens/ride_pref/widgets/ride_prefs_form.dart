@@ -31,6 +31,8 @@ class _RidePrefFormState extends State<RidePrefForm> {
   late DateTime departureDate;
   Location? arrival;
   late int requestedSeats;
+  bool swapButtonOnDeparture =
+      true; // true: swap button on departure row; false: on arrival row
 
   // ----------------------------------
   // Initialize the Form attributes
@@ -58,6 +60,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
   // Handle events
   // ----------------------------------
 
+  /// Handles the selection of departure location by navigating to the picker screen.
   void _selectDeparture() async {
     // 1 - Push the departure selection screen
     final departureResult = await Navigator.push(
@@ -73,6 +76,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
     }
   }
 
+  /// Handles the selection of arrival location by navigating to the picker screen.
   void _selectArrival() async {
     // 1 - Push the arrival selection screen
     final arrivalLocation = await Navigator.push(
@@ -88,6 +92,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
     }
   }
 
+  /// Handles the selection of departure date by navigating to the date picker screen.
   void _selectDate() async {
     // 1 - Push the date selection screen
     final departureDateResult = await Navigator.push(
@@ -103,6 +108,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
     }
   }
 
+  /// Handles the selection of number of seats by navigating to the seats picker screen.
   void _selectSeats() async {
     // 1 - Push the seats selection screen
     final requestedSeatResult = await Navigator.push(
@@ -118,14 +124,58 @@ class _RidePrefFormState extends State<RidePrefForm> {
     }
   }
 
+  /// Swaps the departure and arrival locations, and toggles the swap button position.
+  void _swapLocations() {
+    setState(() {
+      // 1 - Swap the locations
+      final temp = departure;
+      departure = arrival;
+      arrival = temp;
+      // 2 - Toggle the button position
+      swapButtonOnDeparture = !swapButtonOnDeparture;
+    });
+  }
+
   // ----------------------------------
   // Compute the widgets rendering
   // ----------------------------------
 
-  String get departureText => departure?.name ?? 'Select departure';
-  String get arrivalText => arrival?.name ?? 'Select arrival';
-  String get dateText => DateTimeUtils.formatDateTime(departureDate);
+  String get departureLabel => 'Leaving from';
+  String? get departureValue => departure?.name;
+  String get arrivalLabel => 'Going to';
+  String? get arrivalValue => arrival?.name;
+  String get dateText {
+    return DateTimeUtils.formatDateTime(departureDate);
+  }
+
   String get seatsText => '$requestedSeats';
+
+  /// Builds the swap button widget for swapping locations.
+  Widget? _swapButton() {
+    return SizedBox(
+      width: BlaSpacings.l,
+      height: BlaSpacings.l,
+      child: IconButton(
+        icon: const Icon(Icons.swap_vert),
+        onPressed: _swapLocations,
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(),
+        color: BlaColors.primary,
+      ),
+    );
+  }
+
+  /// Returns the trailing widget for the departure row
+  Widget? _departureTrailing() {
+    if (swapButtonOnDeparture && departure != null) return _swapButton();
+    return null;
+  }
+
+  /// Returns the trailing widget for the arrival row
+  Widget? _arrivalTrailing() {
+    if (!swapButtonOnDeparture && arrival != null) return _swapButton();
+    return null;
+  }
 
   // ----------------------------------
   // Build the widgets
@@ -137,25 +187,29 @@ class _RidePrefFormState extends State<RidePrefForm> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _formRow(
-          formText: departureText,
+          label: departureLabel,
+          value: departureValue,
           onTap: _selectDeparture,
           formIcon: Icons.circle_outlined,
+          trailing: _departureTrailing(),
         ),
         BlaDivider(),
         _formRow(
-          formText: arrivalText,
+          label: arrivalLabel,
+          value: arrivalValue,
           onTap: _selectArrival,
           formIcon: Icons.circle_outlined,
+          trailing: _arrivalTrailing(),
         ),
         BlaDivider(),
         _formRow(
-          formText: dateText,
+          value: dateText,
           onTap: _selectDate,
           formIcon: Icons.calendar_month_rounded,
         ),
         BlaDivider(),
         _formRow(
-          formText: seatsText,
+          value: seatsText,
           onTap: _selectSeats,
           formIcon: Icons.person_outline,
         ),
@@ -172,11 +226,25 @@ class _RidePrefFormState extends State<RidePrefForm> {
 
   /// Builds a reusable row widget for form fields
   Widget _formRow({
-    required String
-    formText, // The text to display in the row (e.g., location name or date)
-    required VoidCallback onTap, // Callback when the row is tapped
-    required IconData formIcon, // Icon to display at the start of the row
+    String? label,
+    String? value,
+    required VoidCallback onTap,
+    required IconData formIcon,
+    Widget? trailing,
   }) {
+    
+    // Determine the text to display
+    final String displayText =
+        value ?? label ?? ''; 
+        
+    // Determine if the displayed text is a placeholder
+    final bool isPlaceholder;
+    if (value == null && label != null) {
+      isPlaceholder = true;
+    } else {
+      isPlaceholder = false;
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Padding(
@@ -188,11 +256,14 @@ class _RidePrefFormState extends State<RidePrefForm> {
             SizedBox(width: BlaSpacings.s),
             Expanded(
               child: Text(
-                formText,
-                style: BlaTextStyles.body,
+                displayText,
+                style: BlaTextStyles.body.copyWith(
+                  color: isPlaceholder ? BlaColors.neutralLight : null,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            if (trailing != null) trailing,
           ],
         ),
       ),
