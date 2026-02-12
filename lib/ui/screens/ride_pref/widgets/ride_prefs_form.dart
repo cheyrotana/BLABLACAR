@@ -1,6 +1,7 @@
 import 'package:blabla/ui/screens/location_picker/location_picker_screen.dart';
 import 'package:blabla/ui/theme/theme.dart';
 import 'package:blabla/ui/widgets/actions/bla_button.dart';
+import 'package:blabla/ui/widgets/display/bla_divider.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../model/ride/locations.dart';
@@ -139,20 +140,20 @@ class _RidePrefFormState extends State<RidePrefForm> {
           formText: departureText,
           onTap: _selectDeparture,
           formIcon: Icons.circle_outlined,
-          formBottomBorder: BorderSide(color: BlaColors.greyLight),
         ),
+        BlaDivider(),
         _formRow(
           formText: arrivalText,
           onTap: _selectArrival,
           formIcon: Icons.circle_outlined,
-          formBottomBorder: BorderSide(color: BlaColors.greyLight),
         ),
+        BlaDivider(),
         _formRow(
           formText: dateText,
           onTap: _selectDate,
           formIcon: Icons.calendar_month_rounded,
-          formBottomBorder: BorderSide(color: BlaColors.greyLight),
         ),
+        BlaDivider(),
         _formRow(
           formText: seatsText,
           onTap: _selectSeats,
@@ -174,44 +175,25 @@ class _RidePrefFormState extends State<RidePrefForm> {
     required String
     formText, // The text to display in the row (e.g., location name or date)
     required VoidCallback onTap, // Callback when the row is tapped
-    BorderSide? formBottomBorder, // Optional bottom border for styling
     required IconData formIcon, // Icon to display at the start of the row
   }) {
     return GestureDetector(
-      onTap: onTap, 
+      onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.all(
-          BlaSpacings.m,
-        ), 
-        child: Container(
-          decoration: formBottomBorder != null
-              ? BoxDecoration(
-                  border: Border(bottom: formBottomBorder),
-                ) 
-              : null,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: BlaSpacings.s, 
-              vertical: BlaSpacings.s, 
+        padding: EdgeInsets.all(BlaSpacings.m),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(formIcon),
+            SizedBox(width: BlaSpacings.s),
+            Expanded(
+              child: Text(
+                formText,
+                style: BlaTextStyles.body,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.start, 
-              children: [
-                Icon(formIcon),
-                SizedBox(
-                  width: BlaSpacings.s,
-                ),
-                Expanded(
-                  child: Text(
-                    formText, 
-                    style: BlaTextStyles.body, 
-                    overflow: TextOverflow.ellipsis
-                  ),
-                ),
-              ],
-            ),
-          ),
+          ],
         ),
       ),
     );
