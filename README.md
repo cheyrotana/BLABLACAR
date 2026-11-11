@@ -1,16 +1,17 @@
-# blablacar
+# BlaBlaCar-style Ride App (Flutter)
 
-A new Flutter project.
+A ride-sharing app UI built with Flutter, inspired by BlaBlaCar. Built as a mobile development course project.
 
-## Getting Started
+## Features
+- **Ride search form** — departure, arrival, date and seat count, with a swap button for locations
+- **Location picker** — searchable list of locations
+- **Reusable UI components** — custom buttons and form rows following a shared theme
 
-This project is a starting point for a Flutter application.
+## Tech
+Flutter · Dart
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Run locally
+```bash
+flutter pub get
+flutter run
+```
